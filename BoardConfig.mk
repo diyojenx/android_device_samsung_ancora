@@ -28,6 +28,9 @@ USE_CAMERA_STUB := true
 # inherit from the proprietary version
 -include vendor/samsung/ancora/BoardConfigVendor.mk
 
+# create the folder /usr to prevent the build from failing
+$(shell mkdir -p $(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/usr/)
+
 TARGET_SPECIFIC_HEADER_PATH := device/samsung/ancora/include
 
 TARGET_BOARD_PLATFORM := msm7x30
@@ -39,13 +42,15 @@ TARGET_CPU_ABI2 := armeabi
 # Enable NEON feature
 TARGET_ARCH := arm
 TARGET_ARCH_VARIANT := armv7-a-neon
-TARGET_CPU_VARIANT := scorpion
+TARGET_CPU_VARIANT := cortex-a8
 
 TARGET_ARCH_LOWMEM := true
+TARGET_RUNNING_WITHOUT_SYNC_FRAMEWORK := true
 
 COMMON_GLOBAL_CFLAGS += -DQCOM_HARDWARE
 COMMON_GLOBAL_CFLAGS += -DBINDER_COMPAT
 COMMON_GLOBAL_CFLAGS += -DSAMSUNG_CAMERA_LEGACY
+COMMON_GLOBAL_CFLAGS += -DNEEDS_VECTORIMPL_SYMBOLS
 
 TARGET_BOOTLOADER_BOARD_NAME := ancora
 TARGET_OTA_ASSERT_DEVICE := ancora,GT-I8150
@@ -161,3 +166,35 @@ TARGET_RECOVERY_FSTAB := device/samsung/ancora/config/fstab.qcom
 TARGET_PREBUILT_KERNEL := device/samsung/ancora/prebuilt/zImage
 
 TARGET_USE_CUSTOM_LUN_FILE_PATH := /sys/devices/platform/msm_hsusb/gadget/lun%d/file
+
+TARGET_RUNNING_WITHOUT_SYNC_FRAMEWORK := true
+
+BOARD_EGL_WORKAROUND_BUG_10194508 := true
+
+#OTA updater
+USE_SET_METADATA := false
+
+# SELinux
+BOARD_SEPOLICY_DIRS := \
+    device/samsung/ancora/sepolicy
+BOARD_SEPOLICY_UNION += \
+    file_contexts \
+    property_contexts \
+    bridge.te \
+    camera.te \
+    device.te \
+    dhcp.te \
+    domain.te \
+    drmserver.te \
+    file.te \
+    geomagneticd.te \
+    init.te \
+    mac_update.te \
+    mediaserver.te \
+    rild.te \
+    rmt.te \
+    surfaceflinger.te \
+    system.te \
+    tee.te \
+    ueventd.te \
+    wpa_supplicant.te

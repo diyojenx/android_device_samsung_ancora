@@ -23,6 +23,17 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/ARIESVE.rle:root/ARIESVE.rle \
     $(LOCAL_PATH)/lpm/charging.rle:root/charging.rle
 
+PRODUCT_PROPERTY_OVERRIDES += \
+	ro.config.low_ram=true
+
+#Disable JIT cache
+PRODUCT_PROPERTY_OVERRIDES += \
+    dalvik.vm.jit.codecachesize=0
+
+#disable preloading of EGL/GL drivers in Zygote at boot time
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.zygote.disable_gl_preload=true
+
 # Support files
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml \
@@ -115,6 +126,7 @@ PRODUCT_PACKAGES += \
     gralloc.msm7x30 \
     hwcomposer.msm7x30 \
     gps.msm7x30 \
+    memtrack.msm7x30 \
     lights.msm7x30 \
     power.msm7x30 \
     audio.primary.msm7x30 \
