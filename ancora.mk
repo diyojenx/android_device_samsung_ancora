@@ -23,9 +23,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/ARIESVE.rle:root/ARIESVE.rle \
     $(LOCAL_PATH)/lpm/charging.rle:root/charging.rle
 
-PRODUCT_PROPERTY_OVERRIDES += \
-	ro.config.low_ram=true
-
 #Disable JIT cache
 PRODUCT_PROPERTY_OVERRIDES += \
     dalvik.vm.jit.codecachesize=0
