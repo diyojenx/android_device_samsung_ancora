@@ -179,6 +179,8 @@ USE_SET_METADATA := false
 BOARD_EGL_NEEDS_FNW := true
 BOARD_USE_MHEAP_SCREENSHOT := true
 
+BOARD_HAVE_PRE_KITKAT_AUDIO_BLOB := true
+
 # SELinux
 BOARD_SEPOLICY_DIRS := \
     device/samsung/ancora/sepolicy
