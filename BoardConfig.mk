@@ -23,7 +23,6 @@
 # WARNING: This line must come *before* including the proprietary
 # variant, so that it gets overwritten by the parent (which goes
 # against the traditional rules of inheritance).
-USE_CAMERA_STUB := true
 
 # inherit from the proprietary version
 -include vendor/samsung/ancora/BoardConfigVendor.mk
@@ -31,39 +30,37 @@ USE_CAMERA_STUB := true
 # create the folder /usr to prevent the build from failing
 $(shell mkdir -p $(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/usr/)
 
-TARGET_SPECIFIC_HEADER_PATH := device/samsung/ancora/include
 
+# Platform
+TARGET_BOOTLOADER_BOARD_NAME := ancora
+TARGET_OTA_ASSERT_DEVICE := ancora,GT-I8150
 TARGET_BOARD_PLATFORM := msm7x30
 TARGET_BOARD_PLATFORM_GPU := qcom-adreno200
+TARGET_NO_BOOTLOADER := true
+TARGET_NO_RADIOIMAGE := true
+TARGET_NO_INITLOGO := true
 
-TARGET_CPU_ABI := armeabi-v7a
-TARGET_CPU_ABI2 := armeabi
-
-# Enable NEON feature
+# Architecture
 TARGET_ARCH := arm
 TARGET_ARCH_VARIANT := armv7-a-neon
 TARGET_CPU_VARIANT := cortex-a8
-
 TARGET_ARCH_LOWMEM := true
 TARGET_RUNNING_WITHOUT_SYNC_FRAMEWORK := true
+TARGET_CPU_ABI := armeabi-v7a
+TARGET_CPU_ABI2 := armeabi
 
-COMMON_GLOBAL_CFLAGS += -DQCOM_HARDWARE
-COMMON_GLOBAL_CFLAGS += -DBINDER_COMPAT
-COMMON_GLOBAL_CFLAGS += -DSAMSUNG_CAMERA_LEGACY
-COMMON_GLOBAL_CFLAGS += -DNEEDS_VECTORIMPL_SYMBOLS
-
-TARGET_BOOTLOADER_BOARD_NAME := ancora
-TARGET_OTA_ASSERT_DEVICE := ancora,GT-I8150
-
-TARGET_NO_BOOTLOADER := true
-TARGET_NO_RADIOIMAGE := true
-
-TARGET_NO_INITLOGO := true
-
+# Screen dimension
 TARGET_SCREEN_HEIGHT := 800
 TARGET_SCREEN_WIDTH := 480
 
-# Wifi related defines
+# Kernel
+BOARD_KERNEL_BASE := 0x00400000
+BOARD_KERNEL_PAGESIZE := 4096
+TARGET_KERNEL_SOURCE := kernel/samsung/ion
+TARGET_KERNEL_CONFIG := ancora_defconfig
+
+# WiFi
+BOARD_HAVE_SAMSUNG_WIFI          := true
 WIFI_BAND                        := 802_11_ABG
 WPA_SUPPLICANT_VERSION           := VER_0_8_X
 BOARD_WPA_SUPPLICANT_DRIVER      := NL80211
@@ -71,9 +68,7 @@ BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_bcmdhd
 BOARD_HOSTAPD_DRIVER             := NL80211
 BOARD_HOSTAPD_PRIVATE_LIB        := lib_driver_cmd_bcmdhd
 BOARD_WLAN_DEVICE                := bcmdhd
-BOARD_HAVE_SAMSUNG_WIFI          := true
-
-WIFI_DRIVER_MODULE_PATH          := "/lib/modules/dhd.ko"
+WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/dhd.ko"
 WIFI_DRIVER_MODULE_NAME          := "dhd"
 WIFI_DRIVER_MODULE_ARG           := "firmware_path=/vendor/firmware/fw_bcmdhd.bin nvram_path=/vendor/firmware/nvram_net.txt"
 WIFI_DRIVER_MODULE_AP_ARG        := "firmware_path=/vendor/firmware/fw_bcmdhd_apsta.bin nvram_path=/vendor/firmware/nvram_net.txt"
@@ -81,67 +76,83 @@ WIFI_DRIVER_FW_PATH_PARAM        := "/sys/module/dhd/parameters/firmware_path"
 WIFI_DRIVER_FW_PATH_STA          := "/vendor/firmware/fw_bcmdhd.bin"
 WIFI_DRIVER_FW_PATH_AP           := "/vendor/firmware/fw_bcmdhd_apsta.bin"
 
-BOARD_KERNEL_BASE := 0x00400000
-BOARD_KERNEL_PAGESIZE := 4096
-
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_BCM := true
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/samsung/ancora/bluetooth
 BOARD_BLUEDROID_VENDOR_CONF := device/samsung/ancora/bluetooth/vnd_ancora.txt
 
+# RIL
 BOARD_MOBILEDATA_INTERFACE_NAME = "pdp0"
-
 BOARD_RIL_CLASS := ../../../device/samsung/ancora/ril/
 BOARD_USES_LEGACY_RIL := true
 BOARD_USES_LIBSECRIL_STUB := true
 
-TARGET_QCOM_AUDIO_VARIANT := legacy
-BOARD_HAVE_SAMSUNG_AUDIO := true
-BOARD_USES_QCOM_AUDIO_RESETALL := true
-BOARD_USES_QCOM_AUDIO_VOIPMUTE := true
-
-# QCOM enhanced A/V
-TARGET_ENABLE_QC_AV_ENHANCEMENTS := true
-
-BOARD_EGL_CFG := device/samsung/ancora/config/egl.cfg
-BOARD_EGL_NEEDS_LEGACY_FB := true
-
-USE_OPENGL_RENDERER := true
-
-# QCOM webkit
-ENABLE_WEBGL := true
-TARGET_FORCE_CPU_UPLOAD := true
-
-TARGET_QCOM_DISPLAY_VARIANT := legacy
-TARGET_QCOM_MEDIA_VARIANT := legacy
-TARGET_NO_HW_VSYNC := false
-TARGET_USES_ION := false
-TARGET_USES_C2D_COMPOSITION := true
-
-BOARD_NEEDS_MEMORYHEAPPMEM := true
-
-BOARD_USES_QCOM_HARDWARE := true
+# GPS
 BOARD_USES_QCOM_GPS := true
-
-BOARD_USE_LEGACY_TOUCHSCREEN := true
-
-COMMON_GLOBAL_CFLAGS += -DFORCE_SCREENSHOT_CPU_PATH
-
-# Camera stuff
-BOARD_USES_LEGACY_OVERLAY := true
-BOARD_CAMERA_USE_MM_HEAP := true
-TARGET_DISABLE_ARM_PIE := true
-
-TARGET_PROVIDES_LIBLIGHT := true
-TARGET_PROVIDES_POWERHAL := true
-
-BOARD_VENDOR_QCOM_AMSS_VERSION := 6225
 BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE := msm7x30
 BOARD_VENDOR_QCOM_GPS_LOC_API_AMSS_VERSION := 50000
 
-TARGET_USERIMAGES_USE_EXT4 := true
+# Graphics
+COMMON_GLOBAL_CFLAGS += -DNEW_ION_API
+COMMON_GLOBAL_CFLAGS += -DFORCE_SCREENSHOT_CPU_PATH
+BOARD_EGL_CFG := device/samsung/ancora/config/egl.cfg
+BOARD_EGL_WORKAROUND_BUG_10194508 := true
+BOARD_ALLOW_EGL_HIBERNATION := true
+TARGET_NO_HW_VSYNC := false
+TARGET_USES_C2D_COMPOSITION := true
+USE_OPENGL_RENDERER := true
 
+# Memory allocation
+TARGET_USES_ION := true
+BOARD_NEEDS_MEMORYHEAPPMEM := true
+BOARD_USE_MHEAP_SCREENSHOT := true
+
+# QCOM
+COMMON_GLOBAL_CFLAGS += -DQCOM_HARDWARE
+COMMON_GLOBAL_CFLAGS += -DBINDER_COMPAT
+COMMON_GLOBAL_CFLAGS += -DQCOM_BSP
+BOARD_USES_QCOM_HARDWARE := true
+BOARD_VENDOR_QCOM_AMSS_VERSION := 6225
+TARGET_QCOM_AUDIO_VARIANT := caf
+TARGET_QCOM_DISPLAY_VARIANT := caf
+TARGET_USES_QCOM_BSP := true
+TARGET_ENABLE_QC_AV_ENHANCEMENTS := true
+
+# Power HAL
+TARGET_PROVIDES_POWERHAL := true
+
+# Lights HAL
+TARGET_PROVIDES_LIBLIGHT := true
+
+# Camera
+COMMON_GLOBAL_CFLAGS += -DSAMSUNG_CAMERA_LEGACY
+COMMON_GLOBAL_CFLAGS += -DNEEDS_VECTORIMPL_SYMBOLS
+USE_CAMERA_STUB := true
+BOARD_USES_QCOM_LEGACY_CAM_PARAMS := true
+BOARD_USES_LEGACY_OVERLAY := true
+#TARGET_DISABLE_ARM_PIE := true
+
+# Audio
+TARGET_QCOM_AUDIO_VARIANT := caf
+BOARD_HAVE_SAMSUNG_AUDIO := true
+BOARD_USES_QCOM_AUDIO_RESETALL := true
+BOARD_USES_QCOM_AUDIO_VOIPMUTE := true
+BOARD_HAVE_PRE_KITKAT_AUDIO_BLOB := true
+
+# WEBGL in WebKit
+ENABLE_WEBGL := true
+TARGET_FORCE_CPU_UPLOAD := true
+
+# Storage
+TARGET_USE_CUSTOM_LUN_FILE_PATH := /sys/devices/platform/msm_hsusb/gadget/lun%d/file
+
+
+
+BOARD_USE_LEGACY_TOUCHSCREEN := true
+BOARD_EGL_NEEDS_FNW := true
+
+TARGET_USERIMAGES_USE_EXT4 := true
 BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
 BOARD_VOLD_MAX_PARTITIONS := 28
 
@@ -165,21 +176,8 @@ TARGET_RECOVERY_INITRC := device/samsung/ancora/config/init.recovery.rc
 TARGET_RECOVERY_FSTAB := device/samsung/ancora/config/fstab.qcom
 # End recovery stuff
 
-TARGET_PREBUILT_KERNEL := device/samsung/ancora/prebuilt/zImage
-
-TARGET_USE_CUSTOM_LUN_FILE_PATH := /sys/devices/platform/msm_hsusb/gadget/lun%d/file
-
-TARGET_RUNNING_WITHOUT_SYNC_FRAMEWORK := true
-
-BOARD_EGL_WORKAROUND_BUG_10194508 := true
-
 #OTA updater
 USE_SET_METADATA := false
-
-BOARD_EGL_NEEDS_FNW := true
-BOARD_USE_MHEAP_SCREENSHOT := true
-
-BOARD_HAVE_PRE_KITKAT_AUDIO_BLOB := true
 
 # SELinux
 BOARD_SEPOLICY_DIRS := \
@@ -205,3 +203,4 @@ BOARD_SEPOLICY_UNION += \
     tee.te \
     ueventd.te \
     wpa_supplicant.te
+
